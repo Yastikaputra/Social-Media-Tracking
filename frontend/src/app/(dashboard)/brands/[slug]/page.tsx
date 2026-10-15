@@ -17,17 +17,19 @@ import {
   Upload,
   X,
   AlertCircle,
-  ImageIcon
+  Sparkles,
+  Link as LinkIcon
 } from 'lucide-react';
+import { InstagramIcon, FacebookIcon, ThreadsIcon, WhatsAppIcon } from '@/components/SocialIcons';
 import ScreenshotModal from '@/components/ScreenshotModal';
 import Link from 'next/link';
 
 const BRAND_TABS = [
-  { name: 'Medispro', slug: 'medispro' },
-  { name: 'Pikago', slug: 'pikago' },
-  { name: 'Eleventrent', slug: 'eleventrent' },
-  { name: 'Kuuva', slug: 'kuuva' },
-  { name: 'Kumtura', slug: 'kumtura' },
+  { name: 'Medispro', slug: 'medispro', color: '#0284c7' },
+  { name: 'Pikago', slug: 'pikago', color: '#d97706' },
+  { name: 'Eleventrent', slug: 'eleventrent', color: '#7c3aed' },
+  { name: 'Kuuva', slug: 'kuuva', color: '#059669' },
+  { name: 'Kumtura', slug: 'kumtura', color: '#dc2626' },
 ];
 
 function BrandDetailContent() {
@@ -107,6 +109,21 @@ function BrandDetailContent() {
       console.error('Error fetching brand data:', err);
     } finally {
       setLoading(false);
+    }
+  };
+
+  const getPlatformIcon = (platformSlug: string, className = "w-3.5 h-3.5") => {
+    switch (platformSlug) {
+      case 'instagram':
+        return <InstagramIcon className={`${className} text-[#E1306C]`} />;
+      case 'facebook':
+        return <FacebookIcon className={`${className} text-[#1877F2]`} />;
+      case 'threads':
+        return <ThreadsIcon className={`${className} text-[#111827]`} />;
+      case 'whatsapp':
+        return <WhatsAppIcon className={`${className} text-[#25D366]`} />;
+      default:
+        return <Sparkles className={`${className} text-blue-500`} />;
     }
   };
 
@@ -284,7 +301,7 @@ function BrandDetailContent() {
   if (loading && !brand) {
     return (
       <div className="flex-1 flex items-center justify-center p-12">
-        <div className="w-5 h-5 border-2 border-zinc-900 border-t-transparent rounded-full animate-spin" />
+        <div className="w-5 h-5 border-2 border-blue-600 border-t-transparent rounded-full animate-spin" />
       </div>
     );
   }
@@ -298,31 +315,37 @@ function BrandDetailContent() {
     <div className={`${isFullWidth ? 'w-full max-w-[2000px]' : 'max-w-6xl'} mx-auto px-4 sm:px-6 py-6 space-y-6 transition-all duration-300`}>
       
       {/* ========================================================================= */}
-      {/* 1. HEADER: BRAND TITLE & INLINE INFORMATION METRICS                       */}
+      {/* 1. HEADER: BRAND TITLE & TASTEFUL COLOR INLINE METRICS                    */}
       {/* ========================================================================= */}
       <div className="space-y-4">
         <div className="flex flex-col sm:flex-row sm:items-baseline justify-between gap-2 border-b border-zinc-200 pb-3">
           <div className="flex flex-wrap items-baseline gap-x-3 gap-y-1">
-            <h1 className="text-xl font-semibold tracking-tight text-zinc-900">
-              {brand?.name}
-            </h1>
+            <div className="flex items-center gap-2">
+              <span 
+                className="w-2.5 h-2.5 rounded-full" 
+                style={{ backgroundColor: brand?.color || '#0284c7' }} 
+              />
+              <h1 className="text-xl font-semibold tracking-tight text-zinc-900">
+                {brand?.name}
+              </h1>
+            </div>
             <p className="text-xs text-zinc-500 tabular-nums">
-              Target {leadTarget} leads &middot; <span className="text-zinc-900 font-medium">{leadTotal} tercapai ({leadPct}%)</span> &middot; {reachTotal.toLocaleString('id-ID')} jangkauan
+              Target {leadTarget} leads &middot; <span className="text-emerald-600 font-semibold">{leadTotal} tercapai ({leadPct}%)</span> &middot; <span className="text-blue-600 font-medium">{reachTotal.toLocaleString('id-ID')} jangkauan</span>
             </p>
           </div>
 
           {isAdmin && (
             <Link
               href="/"
-              className="inline-flex items-center gap-1 text-xs text-zinc-500 hover:text-zinc-900 transition-colors self-start sm:self-auto"
+              className="inline-flex items-center gap-1.5 text-xs text-blue-600 hover:text-blue-800 font-medium transition-colors self-start sm:self-auto"
             >
               <ArrowLeft className="w-3.5 h-3.5" />
-              <span>Kembali ke Ringkasan</span>
+              <span>Ringkasan Dashboard</span>
             </Link>
           )}
         </div>
 
-        {/* Brand Underline Tabs (Flat, restrained, zero container nesting) */}
+        {/* Brand Underline Tabs with subtle brand color accent */}
         <nav className="flex space-x-6 overflow-x-auto no-scrollbar" aria-label="Brand Tabs">
           {BRAND_TABS.map((b) => {
             const isSelected = slug === b.slug;
@@ -335,13 +358,21 @@ function BrandDetailContent() {
                     router.push(`/brands/${b.slug}`);
                   }
                 }}
-                className={`text-xs whitespace-nowrap pb-2 font-medium border-b-2 transition-colors cursor-pointer ${
+                className={`text-xs whitespace-nowrap pb-2 font-medium border-b-2 transition-colors cursor-pointer flex items-center gap-1.5 ${
                   isSelected
                     ? 'border-zinc-900 text-zinc-900 font-semibold'
                     : 'border-transparent text-zinc-500 hover:text-zinc-800 hover:border-zinc-300'
                 }`}
+                style={{
+                  borderBottomColor: isSelected ? b.color : undefined,
+                  color: isSelected ? '#09090b' : undefined,
+                }}
               >
-                {b.name}
+                <span 
+                  className="w-2 h-2 rounded-full shrink-0" 
+                  style={{ backgroundColor: b.color }} 
+                />
+                <span>{b.name}</span>
               </button>
             );
           })}
@@ -349,12 +380,13 @@ function BrandDetailContent() {
       </div>
 
       {/* ========================================================================= */}
-      {/* 2. PLATFORM SELECTOR (Restrained segment control)                         */}
+      {/* 2. PLATFORM SELECTOR (With authentic platform colors)                     */}
       {/* ========================================================================= */}
-      <div className="flex items-center gap-1.5 overflow-x-auto no-scrollbar">
+      <div className="flex items-center gap-2 overflow-x-auto no-scrollbar py-0.5">
         {platforms.map((p) => {
           const isSelected = activePlatformSlug === p.slug;
           const stat = platformStats.find((s) => s.platform_id === p.id);
+          
           return (
             <button
               key={p.slug}
@@ -363,14 +395,17 @@ function BrandDetailContent() {
                 setFormError(null);
                 setFormSuccess(null);
               }}
-              className={`inline-flex items-center gap-1.5 px-3 py-1.5 text-xs rounded-md transition-colors whitespace-nowrap cursor-pointer ${
+              className={`inline-flex items-center gap-2 px-3 py-1.5 text-xs rounded-md transition-all whitespace-nowrap border cursor-pointer ${
                 isSelected
-                  ? 'bg-zinc-900 text-white font-medium'
-                  : 'text-zinc-600 hover:text-zinc-900 hover:bg-zinc-100'
+                  ? 'bg-zinc-900 text-white font-medium border-zinc-900 shadow-2xs'
+                  : 'bg-white text-zinc-700 hover:text-zinc-900 hover:bg-zinc-50 border-zinc-200'
               }`}
             >
+              {getPlatformIcon(p.slug, "w-3.5 h-3.5")}
               <span>{p.name}</span>
-              <span className={`text-[11px] tabular-nums ${isSelected ? 'text-zinc-300' : 'text-zinc-400'}`}>
+              <span className={`text-[11px] tabular-nums font-medium ${
+                isSelected ? 'text-zinc-300' : 'text-emerald-600 font-semibold'
+              }`}>
                 {stat?.total_leads || 0}
               </span>
             </button>
@@ -379,41 +414,45 @@ function BrandDetailContent() {
 
         <button
           onClick={() => setActivePlatformSlug('all')}
-          className={`inline-flex items-center gap-1.5 px-3 py-1.5 text-xs rounded-md transition-colors whitespace-nowrap cursor-pointer ${
+          className={`inline-flex items-center gap-1.5 px-3 py-1.5 text-xs rounded-md transition-all whitespace-nowrap border cursor-pointer ${
             activePlatformSlug === 'all'
-              ? 'bg-zinc-900 text-white font-medium'
-              : 'text-zinc-600 hover:text-zinc-900 hover:bg-zinc-100'
+              ? 'bg-zinc-900 text-white font-medium border-zinc-900 shadow-2xs'
+              : 'bg-white text-zinc-700 hover:text-zinc-900 hover:bg-zinc-50 border-zinc-200'
           }`}
         >
+          <Sparkles className="w-3.5 h-3.5 text-amber-500" />
           <span>Semua Saluran</span>
-          <span className={`text-[11px] tabular-nums ${activePlatformSlug === 'all' ? 'text-zinc-300' : 'text-zinc-400'}`}>
+          <span className={`text-[11px] tabular-nums font-medium ${
+            activePlatformSlug === 'all' ? 'text-zinc-300' : 'text-zinc-500'
+          }`}>
             {allTasks.length}
           </span>
         </button>
       </div>
 
       {/* ========================================================================= */}
-      {/* 3. INLINE FORM: PRACTICAL, RESTRAINED, INFORMATION-FIRST                  */}
+      {/* 3. INLINE FORM: PRACTICAL, WITH TASTEFUL COLOR ACCENTS                    */}
       {/* ========================================================================= */}
       <div 
         ref={formRef}
-        className={`border rounded-lg bg-white transition-colors ${
+        className={`border rounded-lg bg-white transition-colors overflow-hidden ${
           editingTaskId ? 'border-amber-400 ring-1 ring-amber-400/40' : 'border-zinc-200'
         }`}
       >
-        <div className="px-4 sm:px-5 py-3 border-b border-zinc-100 flex items-center justify-between">
+        <div className="px-4 sm:px-5 py-3 border-b border-zinc-100 flex items-center justify-between bg-zinc-50/40">
           <div className="flex items-center gap-2">
+            {getPlatformIcon(currentPlatform?.slug || '', "w-4 h-4")}
             <h2 className="text-xs font-semibold uppercase tracking-wider text-zinc-900">
               {editingTaskId ? `Edit Catatan #${editingTaskId}` : `Catat Aktivitas — ${currentPlatform?.name}`}
             </h2>
-            <span className="text-[11px] text-zinc-400">&middot; {brand?.name}</span>
+            <span className="text-[11px] font-medium text-blue-600">&middot; {brand?.name}</span>
           </div>
 
           {editingTaskId && (
             <button
               type="button"
               onClick={resetForm}
-              className="text-xs text-zinc-500 hover:text-zinc-900 underline cursor-pointer"
+              className="text-xs text-amber-700 hover:text-amber-900 font-medium underline cursor-pointer"
             >
               Batal Edit
             </button>
@@ -421,8 +460,8 @@ function BrandDetailContent() {
         </div>
 
         {formSuccess && (
-          <div className="mx-4 sm:mx-5 mt-3 p-2.5 bg-zinc-50 border border-zinc-200 rounded text-xs text-zinc-800 flex items-center gap-2">
-            <Check className="w-3.5 h-3.5 text-zinc-900 shrink-0" />
+          <div className="mx-4 sm:mx-5 mt-3 p-2.5 bg-emerald-50 border border-emerald-200 rounded text-xs text-emerald-800 flex items-center gap-2">
+            <Check className="w-3.5 h-3.5 text-emerald-600 shrink-0" />
             <span>{formSuccess}</span>
           </div>
         )}
@@ -447,7 +486,7 @@ function BrandDetailContent() {
                 value={picName}
                 onChange={(e) => setPicName(e.target.value)}
                 placeholder="Nama staf pengisi"
-                className="w-full border border-zinc-300 rounded-md px-3 py-1.5 text-xs text-zinc-900 placeholder:text-zinc-400 focus:outline-hidden focus:border-zinc-900 focus:ring-1 focus:ring-zinc-900 bg-white"
+                className="w-full border border-zinc-300 rounded-md px-3 py-1.5 text-xs text-zinc-900 placeholder:text-zinc-400 focus:outline-hidden focus:border-blue-600 focus:ring-1 focus:ring-blue-600/20 bg-white"
               />
             </div>
 
@@ -461,12 +500,12 @@ function BrandDetailContent() {
                 value={title}
                 onChange={(e) => setTitle(e.target.value)}
                 placeholder="Topik postingan atau aktivitas promosi"
-                className="w-full border border-zinc-300 rounded-md px-3 py-1.5 text-xs text-zinc-900 placeholder:text-zinc-400 focus:outline-hidden focus:border-zinc-900 focus:ring-1 focus:ring-zinc-900 bg-white"
+                className="w-full border border-zinc-300 rounded-md px-3 py-1.5 text-xs text-zinc-900 placeholder:text-zinc-400 focus:outline-hidden focus:border-blue-600 focus:ring-1 focus:ring-blue-600/20 bg-white"
               />
             </div>
           </div>
 
-          {/* Row 2: Bukti Screenshot (Compact, clean) */}
+          {/* Row 2: Bukti Screenshot */}
           <div>
             <label className="block text-[11px] font-medium text-zinc-700 mb-1">
               Bukti Screenshot
@@ -488,18 +527,18 @@ function BrandDetailContent() {
                       {screenshotFile ? `${(screenshotFile.size / 1024).toFixed(0)} KB` : 'Foto bukti terlampir'}
                     </p>
                   </div>
-                  <div className="flex items-center gap-2 shrink-0">
+                  <div className="flex items-center gap-3 shrink-0">
                     <button
                       type="button"
                       onClick={() => fileInputRef.current?.click()}
-                      className="text-xs text-zinc-700 hover:text-zinc-900 underline cursor-pointer"
+                      className="text-xs text-blue-600 hover:text-blue-800 font-medium underline cursor-pointer"
                     >
-                      Ganti
+                      Ganti Foto
                     </button>
                     <button
                       type="button"
                       onClick={handleRemoveFile}
-                      className="text-xs text-red-600 hover:text-red-800 underline cursor-pointer"
+                      className="text-xs text-red-600 hover:text-red-800 font-medium underline cursor-pointer"
                     >
                       Hapus
                     </button>
@@ -511,11 +550,11 @@ function BrandDetailContent() {
                   className="flex items-center justify-between py-1 px-1 cursor-pointer group"
                 >
                   <div className="flex items-center gap-2 text-xs text-zinc-600">
-                    <Upload className="w-3.5 h-3.5 text-zinc-400 group-hover:text-zinc-600" />
-                    <span>Pilih berkas bukti (PNG, JPG maks 10MB)</span>
+                    <Upload className="w-3.5 h-3.5 text-blue-600 group-hover:text-blue-700" />
+                    <span>Pilih gambar bukti screenshot (PNG, JPG maks 10MB)</span>
                   </div>
-                  <span className="text-[11px] font-medium text-zinc-700 border border-zinc-300 rounded px-2 py-0.5 bg-white group-hover:bg-zinc-50">
-                    Browse
+                  <span className="text-[11px] font-medium text-blue-700 border border-blue-200 rounded px-2 py-0.5 bg-blue-50/50 group-hover:bg-blue-100/60">
+                    Pilih Berkas
                   </span>
                 </div>
               )}
@@ -529,17 +568,20 @@ function BrandDetailContent() {
             </div>
           </div>
 
-          {/* Row 3: Kolom Follow Up (Typography-first) */}
+          {/* Row 3: Kolom Follow Up */}
           <div>
-            <label className="block text-[11px] font-medium text-zinc-700 mb-1">
-              Catatan Follow Up Leads
+            <label className="block text-[11px] font-medium text-zinc-700 mb-1 flex items-center justify-between">
+              <span>Catatan Follow Up Leads</span>
+              <span className="text-[10px] text-emerald-700 font-semibold bg-emerald-50 px-1.5 py-0.2 rounded border border-emerald-100">
+                Penting untuk Evaluasi
+              </span>
             </label>
             <textarea
               rows={2}
               value={followUp}
               onChange={(e) => setFollowUp(e.target.value)}
-              placeholder="Tuliskan catatan tindak lanjut, respon chat/DM, status prospek, atau kendala..."
-              className="w-full border border-zinc-300 rounded-md px-3 py-1.5 text-xs text-zinc-900 placeholder:text-zinc-400 focus:outline-hidden focus:border-zinc-900 focus:ring-1 focus:ring-zinc-900 bg-white"
+              placeholder="Tuliskan catatan tindak lanjut, respon chat WA/DM, status prospek, atau kendala..."
+              className="w-full border border-zinc-300 rounded-md px-3 py-1.5 text-xs text-zinc-900 placeholder:text-zinc-400 focus:outline-hidden focus:border-blue-600 focus:ring-1 focus:ring-blue-600/20 bg-white"
             />
           </div>
 
@@ -552,7 +594,7 @@ function BrandDetailContent() {
                 required
                 value={taskDate}
                 onChange={(e) => setTaskDate(e.target.value)}
-                className="w-full border border-zinc-300 rounded-md px-2.5 py-1 text-xs text-zinc-900 focus:outline-hidden focus:border-zinc-900 bg-white tabular-nums"
+                className="w-full border border-zinc-300 rounded-md px-2.5 py-1 text-xs text-zinc-900 focus:outline-hidden focus:border-blue-600 bg-white tabular-nums"
               />
             </div>
 
@@ -563,7 +605,7 @@ function BrandDetailContent() {
                 min="0"
                 value={leadsCount}
                 onChange={(e) => setLeadsCount(Number(e.target.value) || 0)}
-                className="w-full border border-zinc-300 rounded-md px-2.5 py-1 text-xs text-zinc-900 focus:outline-hidden focus:border-zinc-900 bg-white tabular-nums"
+                className="w-full border border-zinc-300 rounded-md px-2.5 py-1 text-xs text-emerald-700 font-semibold focus:outline-hidden focus:border-blue-600 bg-white tabular-nums"
               />
             </div>
 
@@ -572,7 +614,7 @@ function BrandDetailContent() {
               <select
                 value={contentType}
                 onChange={(e) => setContentType(e.target.value)}
-                className="w-full border border-zinc-300 rounded-md px-2 py-1 text-xs text-zinc-900 focus:outline-hidden focus:border-zinc-900 bg-white"
+                className="w-full border border-zinc-300 rounded-md px-2 py-1 text-xs text-zinc-900 focus:outline-hidden focus:border-blue-600 bg-white"
               >
                 <option value="Post/Content">Post / Feed</option>
                 <option value="Reels">Reels / Video</option>
@@ -590,7 +632,7 @@ function BrandDetailContent() {
                 value={linkUrl}
                 onChange={(e) => setLinkUrl(e.target.value)}
                 placeholder="https://..."
-                className="w-full border border-zinc-300 rounded-md px-2.5 py-1 text-xs text-zinc-900 focus:outline-hidden focus:border-zinc-900 bg-white"
+                className="w-full border border-zinc-300 rounded-md px-2.5 py-1 text-xs text-zinc-900 focus:outline-hidden focus:border-blue-600 bg-white"
               />
             </div>
           </div>
@@ -602,20 +644,27 @@ function BrandDetailContent() {
               onClick={resetForm}
               className="text-xs text-zinc-500 hover:text-zinc-800 cursor-pointer"
             >
-              Reset
+              Reset Form
             </button>
 
             <button
               type="submit"
               disabled={formLoading}
-              className="inline-flex items-center gap-1.5 px-4 py-1.5 text-xs font-medium text-white bg-zinc-900 hover:bg-zinc-800 disabled:opacity-50 rounded-md transition-colors cursor-pointer"
+              className={`inline-flex items-center gap-1.5 px-4 py-1.5 text-xs font-medium text-white rounded-md transition-colors cursor-pointer disabled:opacity-50 ${
+                editingTaskId 
+                  ? 'bg-amber-600 hover:bg-amber-700' 
+                  : 'bg-blue-600 hover:bg-blue-700'
+              }`}
             >
               {formLoading ? (
                 <span>Menyimpan...</span>
               ) : (
-                <span>
-                  {editingTaskId ? 'Simpan Perubahan' : `Simpan Catatan`}
-                </span>
+                <>
+                  <Check className="w-3.5 h-3.5" />
+                  <span>
+                    {editingTaskId ? 'Simpan Perubahan' : `Simpan Catatan ${currentPlatform?.name || ''}`}
+                  </span>
+                </>
               )}
             </button>
           </div>
@@ -623,14 +672,14 @@ function BrandDetailContent() {
       </div>
 
       {/* ========================================================================= */}
-      {/* 4. TABLE: HIGH DENSITY, INFORMATION-FIRST, TYPOGRAPHY-DRIVEN              */}
+      {/* 4. TABLE: HIGH DENSITY, CLEAR FOLLOW UP & COLORS                          */}
       {/* ========================================================================= */}
-      <div className="border border-zinc-200 rounded-md bg-white overflow-hidden">
+      <div className="border border-zinc-200 rounded-md bg-white overflow-hidden shadow-2xs">
         {/* Table Toolbar */}
         <div className="px-4 py-2.5 border-b border-zinc-200 flex flex-col sm:flex-row sm:items-center justify-between gap-2 bg-zinc-50/50">
           <div className="flex items-center gap-2">
             <span className="text-xs font-semibold text-zinc-900">
-              Daftar Catatan
+              Daftar Catatan Tracking
             </span>
             <span className="text-xs text-zinc-400 tabular-nums">
               &middot; {filteredTasks.length} entri
@@ -643,7 +692,7 @@ function BrandDetailContent() {
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
               placeholder="Cari konten, PIC, follow up..."
-              className="w-full sm:w-56 pl-7 pr-2.5 py-1 text-xs border border-zinc-300 rounded-md focus:outline-hidden focus:border-zinc-900 bg-white text-zinc-900 placeholder:text-zinc-400"
+              className="w-full sm:w-56 pl-7 pr-2.5 py-1 text-xs border border-zinc-300 rounded-md focus:outline-hidden focus:border-blue-600 bg-white text-zinc-900 placeholder:text-zinc-400"
             />
             <Search className="w-3.5 h-3.5 text-zinc-400 absolute left-2 top-2 pointer-events-none" />
           </div>
@@ -662,7 +711,7 @@ function BrandDetailContent() {
                   <th className="py-2.5 px-3.5 w-32">Tanggal & PIC</th>
                   <th className="py-2.5 px-3.5 w-28">Saluran</th>
                   <th className="py-2.5 px-3.5 min-w-[180px]">Judul Konten</th>
-                  <th className="py-2.5 px-3.5 w-24 text-center">Bukti</th>
+                  <th className="py-2.5 px-3.5 w-24 text-center">Bukti SS</th>
                   <th className="py-2.5 px-3.5 min-w-[240px]">Follow Up</th>
                   <th className="py-2.5 px-3.5 w-16 text-right">Leads</th>
                   <th className="py-2.5 px-3.5 w-12 text-center">Tautan</th>
@@ -677,24 +726,25 @@ function BrandDetailContent() {
                       <span className="font-medium text-zinc-900 tabular-nums block">
                         {task.task_date}
                       </span>
-                      <span className="text-[11px] text-zinc-500 block">
+                      <span className="text-[11px] text-blue-700 font-medium block">
                         {task.pic_name || task.user?.name || 'Staf'}
                       </span>
                     </td>
 
                     {/* Platform */}
                     <td className="py-2.5 px-3.5 whitespace-nowrap">
-                      <span className="font-medium text-zinc-900 block">
-                        {task.platform?.name}
-                      </span>
-                      <span className="text-[11px] text-zinc-500 block">
+                      <div className="flex items-center gap-1.5">
+                        {getPlatformIcon(task.platform?.slug || '')}
+                        <span className="font-medium text-zinc-900">{task.platform?.name}</span>
+                      </div>
+                      <span className="text-[11px] text-zinc-500 block mt-0.5">
                         {task.content_type}
                       </span>
                     </td>
 
                     {/* Judul Konten */}
                     <td className="py-2.5 px-3.5">
-                      <p className="font-medium text-zinc-900 line-clamp-2">
+                      <p className="font-medium text-zinc-900 line-clamp-2 leading-snug">
                         {task.title}
                       </p>
                     </td>
@@ -708,10 +758,10 @@ function BrandDetailContent() {
                             setViewScreenshotUrl(task.screenshot_url || null);
                             setViewScreenshotTitle(`${task.brand?.name} - ${task.platform?.name}: ${task.title}`);
                           }}
-                          className="inline-flex items-center gap-1 text-[11px] font-medium text-zinc-700 hover:text-zinc-950 border border-zinc-200 px-2 py-0.5 rounded hover:bg-zinc-50 cursor-pointer"
+                          className="inline-flex items-center gap-1 text-[11px] font-semibold text-purple-700 hover:text-purple-900 bg-purple-50/80 hover:bg-purple-100 border border-purple-200 px-2 py-0.5 rounded cursor-pointer transition-colors"
                         >
                           <Maximize2 className="w-3 h-3" />
-                          <span>Bukti</span>
+                          <span>Lihat SS</span>
                         </button>
                       ) : (
                         <span className="text-zinc-300">&mdash;</span>
@@ -721,9 +771,9 @@ function BrandDetailContent() {
                     {/* Follow Up */}
                     <td className="py-2.5 px-3.5">
                       {task.follow_up || task.notes ? (
-                        <p className="text-xs text-zinc-700 leading-relaxed line-clamp-2 hover:line-clamp-none">
+                        <div className="border-l-2 border-emerald-500 pl-2 text-xs text-zinc-700 leading-relaxed line-clamp-2 hover:line-clamp-none">
                           {task.follow_up || task.notes}
-                        </p>
+                        </div>
                       ) : (
                         <span className="text-zinc-300 text-[11px]">&mdash;</span>
                       )}
@@ -731,7 +781,7 @@ function BrandDetailContent() {
 
                     {/* Leads */}
                     <td className="py-2.5 px-3.5 text-right whitespace-nowrap">
-                      <span className="font-semibold text-zinc-900 tabular-nums">
+                      <span className="font-bold text-emerald-600 tabular-nums">
                         {task.leads_count}
                       </span>
                     </td>
@@ -743,7 +793,7 @@ function BrandDetailContent() {
                           href={task.link_url}
                           target="_blank"
                           rel="noopener noreferrer"
-                          className="text-zinc-400 hover:text-zinc-700 inline-block p-1"
+                          className="text-blue-600 hover:text-blue-800 inline-block p-1"
                           title={task.link_url}
                         >
                           <ExternalLink className="w-3.5 h-3.5" />
@@ -759,7 +809,7 @@ function BrandDetailContent() {
                         <button
                           type="button"
                           onClick={() => handleEditTask(task)}
-                          className="p-1 text-zinc-400 hover:text-zinc-700 cursor-pointer"
+                          className="p-1 text-zinc-400 hover:text-blue-600 cursor-pointer"
                           title="Edit"
                         >
                           <Edit2 className="w-3.5 h-3.5" />
@@ -798,7 +848,7 @@ export default function BrandDetailPage() {
     <Suspense
       fallback={
         <div className="flex-1 flex items-center justify-center p-12">
-          <div className="w-5 h-5 border-2 border-zinc-900 border-t-transparent rounded-full animate-spin" />
+          <div className="w-5 h-5 border-2 border-blue-600 border-t-transparent rounded-full animate-spin" />
         </div>
       }
     >
