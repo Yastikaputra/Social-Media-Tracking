@@ -71,6 +71,18 @@ export interface PlatformStat {
   total_engagement: number;
 }
 
+export interface UserMonitoring {
+  user_id: number;
+  name: string;
+  email: string;
+  role: 'admin' | 'staff';
+  total_tasks: number;
+  total_leads: number;
+  total_reach: number;
+  brand_tasks: Record<string, number>;
+  platform_tasks: Record<string, number>;
+}
+
 export interface DashboardAnalytics {
   summary: {
     total_leads: number;
@@ -116,6 +128,7 @@ export interface DashboardAnalytics {
     achievement_pct: number;
   }>;
   brand_platform_matrix: Array<Record<string, any>>;
+  user_monitoring?: UserMonitoring[];
   leads_trend: Array<{
     date: string;
     formatted_date: string;
@@ -126,5 +139,7 @@ export interface DashboardAnalytics {
     whatsapp?: number;
   }>;
   recent_tasks: TrackingTask[];
+  all_tasks?: TrackingTask[];
   selected_brand?: Brand | null;
 }
+

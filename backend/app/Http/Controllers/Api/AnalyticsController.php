@@ -179,13 +179,60 @@ class AnalyticsController extends Controller
             $current->addDay();
         }
 
-        // 5. Recent Activity Logs
+        // 5. Recent Activity Logs & Full Tasks
         $recentTasks = (clone $query)
             ->with(['user:id,name', 'brand:id,name,slug,color', 'platform:id,name,slug,color'])
             ->orderBy('task_date', 'desc')
             ->orderBy('id', 'desc')
             ->limit(10)
             ->get();
+
+        $allTasks = (clone $query)
+            ->with(['user:id,name', 'brand:id,name,slug,color', 'platform:id,name,slug,color'])
+            ->orderBy('task_date', 'desc')
+            ->orderBy('id', 'desc')
+            ->limit(200)
+            ->get();
+
+        // 6. User Monitoring (Aktivitas input task per unit usaha dan per media sosial)
+        $users = \App\Models\User::all();
+        $userMonitoring = $users->map(function ($u) use ($brands, $platforms, $startDate, $endDate) {
+            $userTaskQuery = TrackingTask::where('user_id', $u->id);
+            if ($startDate) $userTaskQuery->whereDate('task_date', '>=', $startDate);
+            if ($endDate) $userTaskQuery->whereDate('task_date', '<=', $endDate);
+
+            $totalUserTasks = (clone $userTaskQuery)->count();
+            $totalUserLeads = (int) (clone $userTaskQuery)->sum('leads_count');
+            $totalUserReach = (int) (clone $userTaskQuery)->sum('reach_count');
+
+            // Breakdown per unit usaha (Medispro, Pikago, Eleventrent, Kuuva, Kumtura)
+            $brandTasks = [];
+            foreach ($brands as $b) {
+                $bQuery = (clone $userTaskQuery)->where('brand_id', $b->id);
+                $brandTasks[$b->slug] = $bQuery->count();
+                $brandTasks[$b->slug . '_leads'] = (int) $bQuery->sum('leads_count');
+            }
+
+            // Breakdown per media sosial (Instagram, Facebook, Threads, WhatsApp)
+            $platformTasks = [];
+            foreach ($platforms as $p) {
+                $pQuery = (clone $userTaskQuery)->where('platform_id', $p->id);
+                $platformTasks[$p->slug] = $pQuery->count();
+                $platformTasks[$p->slug . '_leads'] = (int) $pQuery->sum('leads_count');
+            }
+
+            return [
+                'user_id' => $u->id,
+                'name' => $u->name,
+                'email' => $u->email,
+                'role' => $u->role,
+                'total_tasks' => $totalUserTasks,
+                'total_leads' => $totalUserLeads,
+                'total_reach' => $totalUserReach,
+                'brand_tasks' => $brandTasks,
+                'platform_tasks' => $platformTasks,
+            ];
+        })->sortByDesc('total_tasks')->values();
 
         return response()->json([
             'summary' => [
@@ -200,8 +247,10 @@ class AnalyticsController extends Controller
             'leads_by_platform' => $leadsByPlatform,
             'leads_by_brand' => $leadsByBrand,
             'brand_platform_matrix' => $brandPlatformMatrix,
+            'user_monitoring' => $userMonitoring,
             'leads_trend' => $trendData,
             'recent_tasks' => $recentTasks,
+            'all_tasks' => $allTasks,
             'selected_brand' => $selectedBrand,
         ]);
     }
