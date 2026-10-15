@@ -22,7 +22,7 @@ export default function RootLayout({
 }) {
   return (
     <html lang="id" className="h-full antialiased" suppressHydrationWarning>
-      <body className="min-h-full bg-slate-50 text-slate-900 font-sans" suppressHydrationWarning>
+      <body className="min-h-full bg-zinc-50 text-zinc-900 font-sans" suppressHydrationWarning>
         <AuthProvider>
           <ZoomProvider>
             {children}

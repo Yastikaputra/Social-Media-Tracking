@@ -35,35 +35,34 @@ export default function Navbar() {
 
   return (
     <>
-      <header className="sticky top-0 z-40 bg-white border-b border-gray-200 shadow-xs">
+      <header className="sticky top-0 z-40 bg-white border-b border-zinc-200">
         {/* Top bar with branding, user info & actions */}
         <div className={containerClass}>
-          <div className="flex items-center justify-between h-16">
+          <div className="flex items-center justify-between h-14">
             
             {/* Logo & title */}
             <div className="flex items-center space-x-3">
-              <Link href={mounted && !isAdmin ? "/brands/medispro" : "/"} className="flex items-center space-x-3 group">
-                <div className="w-10 h-10 rounded-xl bg-gradient-to-tr from-blue-600 to-indigo-600 flex items-center justify-center text-white shadow-md shadow-blue-500/20 group-hover:scale-105 transition-transform shrink-0">
-                  <BarChart3 className="w-5 h-5" />
+              <Link href={mounted && !isAdmin ? "/brands/medispro" : "/"} className="flex items-center space-x-2.5 group">
+                <div className="w-7 h-7 rounded-md bg-zinc-900 flex items-center justify-center text-white shrink-0">
+                  <BarChart3 className="w-4 h-4" />
                 </div>
                 <div>
-                  <span className="font-bold text-base sm:text-lg text-gray-900 tracking-tight flex items-center gap-1.5">
-                    Kumtura <span className="text-blue-600 font-semibold text-xs px-2 py-0.5 rounded-full bg-blue-50 border border-blue-200">Tracking</span>
+                  <span className="font-semibold text-sm text-zinc-900 tracking-tight">
+                    Kumtura <span className="text-zinc-500 font-normal">Tracking</span>
                   </span>
-                  <p className="text-[11px] sm:text-xs text-gray-500 -mt-0.5 hidden xs:block">Multi-Brand Social Media Monitoring</p>
                 </div>
               </Link>
             </div>
 
             {/* Desktop Actions */}
-            <div className="hidden md:flex items-center space-x-3">
+            <div className="hidden md:flex items-center space-x-2">
               {/* UTM / WA Helper Tool */}
               <button
                 onClick={() => setShowUtmModal(true)}
-                className="inline-flex items-center gap-1.5 px-3 py-1.5 text-xs font-semibold text-gray-700 bg-gray-50 hover:bg-gray-100 border border-gray-200 rounded-xl transition-colors cursor-pointer"
+                className="inline-flex items-center gap-1.5 px-2.5 py-1 text-xs font-medium text-zinc-600 hover:text-zinc-900 hover:bg-zinc-100 rounded-md transition-colors cursor-pointer"
                 title="Buka WA Link & UTM Generator"
               >
-                <Sparkles className="w-3.5 h-3.5 text-amber-500" />
+                <Sparkles className="w-3.5 h-3.5 text-zinc-400" />
                 <span>Link & WA Helper</span>
               </button>
 
@@ -71,10 +70,10 @@ export default function Navbar() {
               {mounted && isAdmin && (
                 <Link
                   href="/"
-                  className={`inline-flex items-center gap-1.5 px-3 py-1.5 text-xs font-semibold rounded-xl transition-colors ${
+                  className={`inline-flex items-center gap-1.5 px-2.5 py-1 text-xs font-medium rounded-md transition-colors ${
                     pathname === '/'
-                      ? 'bg-blue-600 text-white shadow-xs font-bold'
-                      : 'text-gray-700 bg-gray-50 hover:bg-gray-100 border border-gray-200'
+                      ? 'bg-zinc-100 text-zinc-900 font-semibold'
+                      : 'text-zinc-600 hover:text-zinc-900 hover:bg-zinc-100'
                   }`}
                 >
                   <BarChart3 className="w-3.5 h-3.5" />
@@ -86,47 +85,45 @@ export default function Navbar() {
               {mounted && isAdmin && (
                 <Link
                   href="/users"
-                  className={`inline-flex items-center gap-1.5 px-3 py-1.5 text-xs font-semibold rounded-xl transition-colors ${
+                  className={`inline-flex items-center gap-1.5 px-2.5 py-1 text-xs font-medium rounded-md transition-colors ${
                     pathname === '/users'
-                      ? 'bg-blue-600 text-white shadow-xs font-bold'
-                      : 'text-gray-700 bg-gray-50 hover:bg-gray-100 border border-gray-200'
+                      ? 'bg-zinc-100 text-zinc-900 font-semibold'
+                      : 'text-zinc-600 hover:text-zinc-900 hover:bg-zinc-100'
                   }`}
                 >
                   <Users className="w-3.5 h-3.5" />
-                  <span>Pengaturan User</span>
+                  <span>Pengguna</span>
                 </Link>
               )}
 
               {/* User Profile & Logout */}
               {mounted ? (
                 user ? (
-                  <div className="flex items-center pl-3 border-l border-gray-200 space-x-3">
+                  <div className="flex items-center pl-3 border-l border-zinc-200 space-x-2.5">
                     <div className="text-right">
-                      <p className="text-xs font-bold text-gray-900 leading-none">{user.name}</p>
-                      <span className={`inline-block mt-0.5 text-[10px] uppercase font-bold tracking-wider px-1.5 py-0.2 rounded-md ${
-                        user.role === 'admin' ? 'bg-purple-100 text-purple-700' : 'bg-gray-100 text-gray-600'
-                      }`}>
+                      <p className="text-xs font-medium text-zinc-900 leading-none">{user.name}</p>
+                      <span className="inline-block mt-0.5 text-[10px] uppercase font-medium tracking-wider text-zinc-500">
                         {user.role}
                       </span>
                     </div>
                     <button
                       onClick={logout}
-                      className="p-1.5 text-gray-400 hover:text-red-600 hover:bg-red-50 rounded-xl transition-colors cursor-pointer"
+                      className="p-1 text-zinc-400 hover:text-zinc-700 hover:bg-zinc-100 rounded-md transition-colors cursor-pointer"
                       title="Logout"
                     >
-                      <LogOut className="w-4 h-4" />
+                      <LogOut className="w-3.5 h-3.5" />
                     </button>
                   </div>
                 ) : (
                   <Link
                     href="/login"
-                    className="px-3 py-1.5 text-xs font-bold text-white bg-blue-600 hover:bg-blue-700 rounded-xl transition-colors"
+                    className="px-3 py-1 text-xs font-medium text-white bg-zinc-900 hover:bg-zinc-800 rounded-md transition-colors"
                   >
                     Login
                   </Link>
                 )
               ) : (
-                <div className="w-16 h-8" />
+                <div className="w-16 h-7" />
               )}
             </div>
 

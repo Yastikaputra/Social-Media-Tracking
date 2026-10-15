@@ -159,111 +159,77 @@ export default function UsersManagementPage() {
   }
 
   return (
-    <div className={`${isFullWidth ? 'w-full max-w-[2000px]' : 'max-w-7xl'} mx-auto px-3 sm:px-6 lg:px-8 py-4 sm:py-6 lg:py-8 space-y-6 transition-all duration-300`}>
+    <div className={`${isFullWidth ? 'w-full max-w-[2000px]' : 'max-w-6xl'} mx-auto px-4 sm:px-6 py-6 space-y-6 transition-all duration-300`}>
       {/* Header */}
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 bg-white p-6 rounded-2xl border border-gray-200/80 shadow-xs">
+      <div className="flex flex-col sm:flex-row sm:items-baseline justify-between gap-3 border-b border-zinc-200 pb-3">
         <div>
-          <div className="flex items-center gap-2">
-            <div className="p-2 rounded-xl bg-blue-50 text-blue-600">
-              <Users className="w-6 h-6" />
-            </div>
-            <div>
-              <h1 className="text-xl font-bold text-gray-900">Pengaturan Pengguna (User Management)</h1>
-              <p className="text-xs text-gray-500">
-                Kelola akun tim yang dapat login untuk mengisi tracking sosial media
-              </p>
-            </div>
-          </div>
+          <h1 className="text-xl font-semibold tracking-tight text-zinc-900">Pengguna</h1>
+          <p className="text-xs text-zinc-500">
+            Kelola akun tim yang dapat mengisi catatan tracking media sosial
+          </p>
         </div>
 
         <button
           onClick={openCreateModal}
-          className="inline-flex items-center gap-2 px-4 py-2.5 bg-blue-600 hover:bg-blue-700 text-white text-xs font-semibold rounded-xl shadow-sm transition-all cursor-pointer"
+          className="inline-flex items-center gap-1.5 px-3 py-1.5 bg-zinc-900 hover:bg-zinc-800 text-white text-xs font-medium rounded-md transition-colors cursor-pointer self-start sm:self-auto"
         >
-          <UserPlus className="w-4 h-4" />
-          <span>Tambah User Baru</span>
+          <UserPlus className="w-3.5 h-3.5" />
+          <span>Tambah Pengguna</span>
         </button>
       </div>
 
       {/* Users Table */}
-      <div className="bg-white rounded-2xl border border-gray-200/80 shadow-xs overflow-hidden">
-        <div className="overflow-x-auto rounded-xl">
+      <div className="border border-zinc-200 rounded-md bg-white overflow-hidden">
+        <div className="overflow-x-auto">
           <table className="w-full min-w-[650px] text-left border-collapse text-xs">
             <thead>
-              <tr className="border-b border-gray-200 text-gray-400 uppercase tracking-wider font-semibold bg-gray-50/50">
-                <th className="py-3 px-5">Nama & Profil</th>
-                <th className="py-3 px-5">Alamat Email</th>
-                <th className="py-3 px-5">Hak Akses (Role)</th>
-                <th className="py-3 px-5">Status Akun</th>
-                <th className="py-3 px-5 text-center">Task Dibuat</th>
-                <th className="py-3 px-5 text-right">Aksi</th>
+              <tr className="border-b border-zinc-200 text-zinc-500 uppercase tracking-wider text-[11px] font-semibold bg-zinc-50/75">
+                <th className="py-2.5 px-4">Nama</th>
+                <th className="py-2.5 px-4">Alamat Email</th>
+                <th className="py-2.5 px-4">Peran</th>
+                <th className="py-2.5 px-4">Status</th>
+                <th className="py-2.5 px-4 text-center">Catatan</th>
+                <th className="py-2.5 px-4 text-right">Aksi</th>
               </tr>
             </thead>
-            <tbody className="divide-y divide-gray-100">
+            <tbody className="divide-y divide-zinc-100">
               {users.map((u) => (
-                <tr key={u.id} className="hover:bg-gray-50/80 transition-colors">
-                  <td className="py-3.5 px-5">
-                    <div className="flex items-center gap-3">
-                      <div className="w-8 h-8 rounded-full bg-gradient-to-tr from-blue-500 to-indigo-600 text-white flex items-center justify-center font-bold text-xs uppercase shadow-xs">
-                        {u.name.substring(0, 2)}
-                      </div>
-                      <div>
-                        <p className="font-semibold text-gray-900">{u.name}</p>
-                        {u.id === currentUser?.id && (
-                          <span className="text-[10px] text-blue-600 font-medium">(Akun Anda)</span>
-                        )}
-                      </div>
-                    </div>
+                <tr key={u.id} className="hover:bg-zinc-50/60 transition-colors">
+                  <td className="py-2.5 px-4">
+                    <span className="font-medium text-zinc-900 block">{u.name}</span>
+                    {u.id === currentUser?.id && (
+                      <span className="text-[10px] text-zinc-500">(Akun Anda)</span>
+                    )}
                   </td>
-                  <td className="py-3.5 px-5 font-mono text-gray-700">{u.email}</td>
-                  <td className="py-3.5 px-5">
-                    <span
-                      className={`inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-[11px] font-bold uppercase tracking-wider ${
-                        u.role === 'admin'
-                          ? 'bg-purple-100 text-purple-700 border border-purple-200'
-                          : 'bg-blue-50 text-blue-700 border border-blue-200'
-                      }`}
-                    >
-                      {u.role === 'admin' ? (
-                        <>
-                          <ShieldCheck className="w-3 h-3 text-purple-600" />
-                          <span>Admin</span>
-                        </>
-                      ) : (
-                        <>
-                          <UserCheck className="w-3 h-3 text-blue-600" />
-                          <span>Staff PIC</span>
-                        </>
-                      )}
+                  <td className="py-2.5 px-4 text-zinc-600 tabular-nums">{u.email}</td>
+                  <td className="py-2.5 px-4">
+                    <span className="text-xs font-medium text-zinc-800 uppercase text-[11px]">
+                      {u.role === 'admin' ? 'Administrator' : 'Staf PIC'}
                     </span>
                   </td>
-                  <td className="py-3.5 px-5">
-                    <span
-                      className={`inline-block px-2 py-0.5 rounded-full text-[11px] font-semibold ${
-                        u.status === 'active'
-                          ? 'bg-emerald-50 text-emerald-700 border border-emerald-200'
-                          : 'bg-red-50 text-red-600 border border-red-200'
-                      }`}
-                    >
+                  <td className="py-2.5 px-4">
+                    <span className={`inline-block text-[11px] font-medium ${
+                      u.status === 'active' ? 'text-zinc-700' : 'text-zinc-400'
+                    }`}>
                       {u.status === 'active' ? 'Aktif' : 'Nonaktif'}
                     </span>
                   </td>
-                  <td className="py-3.5 px-5 text-center font-semibold text-gray-700">
-                    {u.tracking_tasks_count || 0} Task
+                  <td className="py-2.5 px-4 text-center tabular-nums text-zinc-600">
+                    {u.tracking_tasks_count || 0}
                   </td>
-                  <td className="py-3.5 px-5 text-right space-x-1">
+                  <td className="py-2.5 px-4 text-right space-x-1 whitespace-nowrap">
                     <button
                       onClick={() => openEditModal(u)}
-                      className="p-1.5 text-gray-400 hover:text-blue-600 hover:bg-blue-50 rounded-lg transition-colors cursor-pointer"
-                      title="Edit User"
+                      className="p-1 text-zinc-400 hover:text-zinc-700 cursor-pointer"
+                      title="Edit Pengguna"
                     >
                       <Edit3 className="w-3.5 h-3.5" />
                     </button>
                     {u.id !== currentUser?.id && (
                       <button
                         onClick={() => handleDeleteUser(u)}
-                        className="p-1.5 text-gray-400 hover:text-red-600 hover:bg-red-50 rounded-lg transition-colors cursor-pointer"
-                        title="Hapus User"
+                        className="p-1 text-zinc-400 hover:text-red-600 cursor-pointer"
+                        title="Hapus Pengguna"
                       >
                         <Trash2 className="w-3.5 h-3.5" />
                       </button>
