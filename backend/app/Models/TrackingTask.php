@@ -24,6 +24,7 @@ class TrackingTask extends Model
         'reach_count',
         'engagement_count',
         'notes',
+        'follow_up',
         'status',
     ];
 

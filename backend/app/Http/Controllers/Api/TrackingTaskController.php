@@ -46,6 +46,8 @@ class TrackingTaskController extends Controller
             $query->where(function ($q) use ($search) {
                 $q->where('title', 'like', "%{$search}%")
                   ->orWhere('notes', 'like', "%{$search}%")
+                  ->orWhere('follow_up', 'like', "%{$search}%")
+                  ->orWhere('pic_name', 'like', "%{$search}%")
                   ->orWhere('link_url', 'like', "%{$search}%");
             });
         }
@@ -72,6 +74,7 @@ class TrackingTaskController extends Controller
             'reach_count' => 'nullable|integer|min:0',
             'engagement_count' => 'nullable|integer|min:0',
             'notes' => 'nullable|string',
+            'follow_up' => 'nullable|string',
             'status' => 'nullable|string|in:completed,in_progress,reviewed',
         ]);
 
@@ -94,6 +97,7 @@ class TrackingTaskController extends Controller
             'reach_count' => $validated['reach_count'] ?? 0,
             'engagement_count' => $validated['engagement_count'] ?? 0,
             'notes' => $validated['notes'] ?? null,
+            'follow_up' => $validated['follow_up'] ?? null,
             'status' => $validated['status'] ?? 'completed',
         ]);
 
@@ -128,6 +132,7 @@ class TrackingTaskController extends Controller
             'reach_count' => 'nullable|integer|min:0',
             'engagement_count' => 'nullable|integer|min:0',
             'notes' => 'nullable|string',
+            'follow_up' => 'nullable|string',
             'status' => 'nullable|string|in:completed,in_progress,reviewed',
         ]);
 

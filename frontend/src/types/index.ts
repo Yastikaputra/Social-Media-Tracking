@@ -46,6 +46,7 @@ export interface TrackingTask {
   reach_count: number;
   engagement_count: number;
   notes?: string | null;
+  follow_up?: string | null;
   status: 'completed' | 'in_progress' | 'reviewed';
   created_at?: string;
   user?: {

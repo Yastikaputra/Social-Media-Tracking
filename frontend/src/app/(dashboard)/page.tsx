@@ -750,8 +750,10 @@ export default function DashboardPage() {
                   </td>
                   <td className="py-3.5 px-4 max-w-xs">
                     <p className="font-bold text-gray-900 truncate">{task.title}</p>
-                    {task.notes && (
-                      <p className="text-[11px] text-gray-500 truncate">{task.notes}</p>
+                    {(task.follow_up || task.notes) && (
+                      <p className="text-[11px] text-gray-500 truncate">
+                        <span className="font-semibold text-emerald-700">Follow up:</span> {task.follow_up || task.notes}
+                      </p>
                     )}
                   </td>
                   <td className="py-3.5 px-4 text-center">
