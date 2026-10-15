@@ -1,0 +1,43 @@
+# Dependencies
+**/node_modules/
+**/vendor/
+
+# Next.js
+frontend/.next/
+frontend/out/
+frontend/build/
+
+# Laravel
+backend/.env
+backend/.env.backup
+backend/.env.production
+backend/storage/*.key
+backend/storage/pail/
+backend/public/storage
+backend/public/build/
+backend/public/hot
+backend/public/fonts-manifest.dev.json
+backend/database/database.sqlite-shm
+backend/database/database.sqlite-wal
+
+# Logs & caches
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+.phpunit.result.cache
+.phpunit.cache/
+
+# Environment files
+*.env.local
+*.env.development.local
+*.env.test.local
+*.env.production.local
+
+# OS / Editor files
+.DS_Store
+Thumbs.db
+.idea/
+.vscode/
+*.swp
+*.swo
