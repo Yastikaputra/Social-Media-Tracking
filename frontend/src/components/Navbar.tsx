@@ -19,14 +19,6 @@ import {
 } from 'lucide-react';
 import UtmHelperModal from './UtmHelperModal';
 
-const BRANDS = [
-  { name: 'Medispro', slug: 'medispro', color: 'from-sky-500 to-blue-600', badge: 'bg-sky-100 text-sky-800' },
-  { name: 'Eleventrent', slug: 'eleventrent', color: 'from-violet-500 to-purple-600', badge: 'bg-violet-100 text-violet-800' },
-  { name: 'Kuuva', slug: 'kuuva', color: 'from-emerald-500 to-teal-600', badge: 'bg-emerald-100 text-emerald-800' },
-  { name: 'Pikago', slug: 'pikago', color: 'from-amber-500 to-orange-600', badge: 'bg-amber-100 text-amber-800' },
-  { name: 'Kumtura', slug: 'kumtura', color: 'from-rose-500 to-red-600', badge: 'bg-rose-100 text-rose-800' },
-];
-
 export default function Navbar() {
   const pathname = usePathname();
   const { user, logout, isAdmin } = useAuth();
@@ -75,13 +67,28 @@ export default function Navbar() {
                 <span>Link & WA Helper</span>
               </button>
 
+              {/* Dashboard link (Admin only) */}
+              {mounted && isAdmin && (
+                <Link
+                  href="/"
+                  className={`inline-flex items-center gap-1.5 px-3 py-1.5 text-xs font-semibold rounded-xl transition-colors ${
+                    pathname === '/'
+                      ? 'bg-blue-600 text-white shadow-xs font-bold'
+                      : 'text-gray-700 bg-gray-50 hover:bg-gray-100 border border-gray-200'
+                  }`}
+                >
+                  <BarChart3 className="w-3.5 h-3.5" />
+                  <span>Dashboard</span>
+                </Link>
+              )}
+
               {/* User management link (Admin only) */}
               {mounted && isAdmin && (
                 <Link
                   href="/users"
                   className={`inline-flex items-center gap-1.5 px-3 py-1.5 text-xs font-semibold rounded-xl transition-colors ${
                     pathname === '/users'
-                      ? 'bg-blue-600 text-white'
+                      ? 'bg-blue-600 text-white shadow-xs font-bold'
                       : 'text-gray-700 bg-gray-50 hover:bg-gray-100 border border-gray-200'
                   }`}
                 >
@@ -135,47 +142,6 @@ export default function Navbar() {
           </div>
         </div>
 
-        {/* Brand Tabs Bar */}
-        <div className="border-t border-gray-100 bg-gray-50/70">
-          <div className={containerClass}>
-            <nav className="flex space-x-1 sm:space-x-2 overflow-x-auto py-2 no-scrollbar" aria-label="Tabs">
-              {/* Dashboard Tab (Hanya Admin yang dapat melihat) */}
-              {mounted && isAdmin && (
-                <Link
-                  href="/"
-                  className={`flex items-center gap-1.5 px-3.5 py-2 text-xs font-medium rounded-xl whitespace-nowrap transition-all ${
-                    pathname === '/'
-                      ? 'bg-blue-600 text-white shadow-xs font-bold'
-                      : 'text-gray-600 hover:text-gray-900 hover:bg-gray-200/60'
-                  }`}
-                >
-                  <BarChart3 className="w-4 h-4" />
-                  <span>Dashboard & Diagram</span>
-                </Link>
-              )}
-
-              {/* 5 Brand Tabs */}
-              {BRANDS.map((brand) => {
-                const isActive = pathname === `/brands/${brand.slug}`;
-                return (
-                  <Link
-                    key={brand.slug}
-                    href={`/brands/${brand.slug}`}
-                    className={`flex items-center gap-1.5 px-3.5 py-2 text-xs font-medium rounded-xl whitespace-nowrap transition-all ${
-                      isActive
-                        ? 'bg-white text-gray-900 shadow-xs border border-gray-200 font-bold'
-                        : 'text-gray-600 hover:text-gray-900 hover:bg-gray-200/60'
-                    }`}
-                  >
-                    <span className={`w-2 h-2 rounded-full bg-gradient-to-tr ${brand.color}`} />
-                    <span>{brand.name}</span>
-                  </Link>
-                );
-              })}
-            </nav>
-          </div>
-        </div>
-
         {/* Mobile menu dropdown */}
         {mobileMenuOpen && (
           <div className="md:hidden border-t border-gray-200 bg-white px-4 pt-3 pb-4 space-y-2.5">
@@ -186,6 +152,17 @@ export default function Navbar() {
               <Sparkles className="w-4 h-4 text-amber-500" />
               <span>Link & WA Helper</span>
             </button>
+
+            {mounted && isAdmin && (
+              <Link
+                href="/"
+                onClick={() => setMobileMenuOpen(false)}
+                className="w-full flex items-center gap-2 px-3 py-2.5 text-sm font-semibold text-gray-700 hover:bg-gray-50 rounded-xl border border-gray-100"
+              >
+                <BarChart3 className="w-4 h-4 text-blue-600" />
+                <span>Dashboard</span>
+              </Link>
+            )}
 
             {mounted && isAdmin && (
               <Link
