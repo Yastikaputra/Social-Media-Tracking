@@ -26,7 +26,6 @@ export default function LoginPage() {
         router.push('/brands/medispro');
       }
     } catch (err: any) {
-      console.error(err);
       setError(err?.data?.message || err?.message || 'Login gagal. Periksa kembali email dan password.');
     } finally {
       setLoading(false);

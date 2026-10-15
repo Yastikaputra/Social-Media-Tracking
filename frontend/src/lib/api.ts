@@ -64,6 +64,7 @@ async function request(endpoint: string, options: RequestInit = {}) {
     const error = new Error(message);
     (error as any).data = data;
     (error as any).status = response.status;
+    (error as any).isAuthError = response.status === 401;
     throw error;
   }
 

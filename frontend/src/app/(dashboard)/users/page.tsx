@@ -42,8 +42,12 @@ export default function UsersManagementPage() {
   const [formError, setFormError] = useState<string | null>(null);
 
   useEffect(() => {
-    if (!authLoading && (!currentUser || !isAdmin)) {
-      router.push('/');
+    if (!authLoading) {
+      if (!currentUser) {
+        router.push('/login');
+      } else if (!isAdmin) {
+        router.push('/brands/medispro');
+      }
     }
   }, [currentUser, authLoading, isAdmin, router]);
 
@@ -52,7 +56,11 @@ export default function UsersManagementPage() {
     try {
       const res = await api.getUsers();
       setUsers(res.users || []);
-    } catch (err) {
+    } catch (err: any) {
+      if (err?.status === 401 || err?.message === 'Unauthenticated.' || err?.isAuthError) {
+        router.push('/login');
+        return;
+      }
       console.error('Error fetching users:', err);
     } finally {
       setLoading(false);
@@ -60,10 +68,10 @@ export default function UsersManagementPage() {
   };
 
   useEffect(() => {
-    if (currentUser && isAdmin) {
+    if (!authLoading && currentUser && isAdmin) {
       loadUsers();
     }
-  }, [currentUser, isAdmin]);
+  }, [currentUser, authLoading, isAdmin]);
 
   const openCreateModal = () => {
     setEditingUser(null);

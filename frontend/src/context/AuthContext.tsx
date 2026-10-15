@@ -31,8 +31,11 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       const token = getStoredToken();
       const cachedUser = getStoredUser();
 
-      if (cachedUser) {
+      if (token && cachedUser) {
         setUser(cachedUser);
+      } else {
+        clearStoredAuth();
+        setUser(null);
       }
 
       if (token) {
@@ -41,12 +44,17 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
           if (res?.user) {
             setUser(res.user);
             setStoredUser(res.user);
+          } else {
+            clearStoredAuth();
+            setUser(null);
           }
-        } catch (err) {
-          console.error('Failed to verify token:', err);
+        } catch (err: any) {
           clearStoredAuth();
           setUser(null);
         }
+      } else {
+        clearStoredAuth();
+        setUser(null);
       }
       setLoading(false);
     };
@@ -64,9 +72,15 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   };
 
   const logout = async () => {
-    await api.logout();
-    setUser(null);
-    router.push('/login');
+    try {
+      await api.logout();
+    } catch {
+      // ignore errors on logout
+    } finally {
+      clearStoredAuth();
+      setUser(null);
+      router.push('/login');
+    }
   };
 
   return (

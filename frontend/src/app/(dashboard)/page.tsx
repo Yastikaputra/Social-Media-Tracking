@@ -96,7 +96,11 @@ export default function DashboardPage() {
       setAnalytics(analyticsRes);
       setBrands(brandsRes.brands || []);
       setPlatforms(platformsRes.platforms || []);
-    } catch (err) {
+    } catch (err: any) {
+      if (err?.status === 401 || err?.message === 'Unauthenticated.' || err?.isAuthError) {
+        router.push('/login');
+        return;
+      }
       console.error('Error fetching dashboard data:', err);
     } finally {
       setLoading(false);
@@ -104,10 +108,10 @@ export default function DashboardPage() {
   };
 
   useEffect(() => {
-    if (user && user.role === 'admin') {
+    if (!authLoading && user && user.role === 'admin') {
       loadData();
     }
-  }, [user, selectedBrandSlug, startDate, endDate]);
+  }, [authLoading, user, selectedBrandSlug, startDate, endDate]);
 
   const getPlatformIcon = (slug: string) => {
     switch (slug) {

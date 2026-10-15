@@ -51,10 +51,14 @@ function BrandDetailContent() {
   const [viewScreenshotTitle, setViewScreenshotTitle] = useState<string>('');
 
   useEffect(() => {
-    if (!authLoading && !user) {
-      router.push('/login');
+    if (!authLoading) {
+      if (!user) {
+        router.push('/login');
+      } else if (slug) {
+        loadBrandData();
+      }
     }
-  }, [user, authLoading, router]);
+  }, [user, authLoading, slug, router]);
 
   const loadBrandData = async () => {
     if (!slug) return;
@@ -74,18 +78,16 @@ function BrandDetailContent() {
       setBrands(allBrandsRes.brands || []);
       setPlatforms(allPlatformsRes.platforms || []);
       setAllTasks(tasksRes.data || []);
-    } catch (err) {
+    } catch (err: any) {
+      if (err?.status === 401 || err?.message === 'Unauthenticated.' || err?.isAuthError) {
+        router.push('/login');
+        return;
+      }
       console.error('Error fetching brand data:', err);
     } finally {
       setLoading(false);
     }
   };
-
-  useEffect(() => {
-    if (user && slug) {
-      loadBrandData();
-    }
-  }, [user, slug]);
 
   // Instant 0ms filtering when switching platforms or searching
   const filteredTasks = useMemo(() => {
