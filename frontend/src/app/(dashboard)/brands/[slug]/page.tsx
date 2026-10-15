@@ -386,6 +386,8 @@ function BrandDetailContent() {
         {platforms.map((p) => {
           const isSelected = activePlatformSlug === p.slug;
           const stat = platformStats.find((s) => s.platform_id === p.id);
+          const leads = stat?.total_leads || 0;
+          const tasksCount = stat?.total_tasks || 0;
           
           return (
             <button
@@ -403,31 +405,50 @@ function BrandDetailContent() {
             >
               {getPlatformIcon(p.slug, "w-3.5 h-3.5")}
               <span>{p.name}</span>
-              <span className={`text-[11px] tabular-nums font-medium ${
-                isSelected ? 'text-zinc-300' : 'text-emerald-600 font-semibold'
+              <span className={`text-[10px] tabular-nums font-semibold px-1.5 py-0.5 rounded ${
+                isSelected 
+                  ? 'bg-zinc-800 text-emerald-400' 
+                  : 'bg-emerald-50 text-emerald-700 border border-emerald-100'
               }`}>
-                {stat?.total_leads || 0}
+                {leads} Leads
+              </span>
+              <span className={`text-[10px] tabular-nums ${
+                isSelected ? 'text-zinc-400' : 'text-zinc-400'
+              }`}>
+                &middot; {tasksCount} konten
               </span>
             </button>
           );
         })}
 
-        <button
-          onClick={() => setActivePlatformSlug('all')}
-          className={`inline-flex items-center gap-1.5 px-3 py-1.5 text-xs rounded-md transition-all whitespace-nowrap border cursor-pointer ${
-            activePlatformSlug === 'all'
-              ? 'bg-zinc-900 text-white font-medium border-zinc-900 shadow-2xs'
-              : 'bg-white text-zinc-700 hover:text-zinc-900 hover:bg-zinc-50 border-zinc-200'
-          }`}
-        >
-          <Sparkles className="w-3.5 h-3.5 text-amber-500" />
-          <span>Semua Saluran</span>
-          <span className={`text-[11px] tabular-nums font-medium ${
-            activePlatformSlug === 'all' ? 'text-zinc-300' : 'text-zinc-500'
-          }`}>
-            {allTasks.length}
-          </span>
-        </button>
+        {(() => {
+          const totalAllLeads = allTasks.reduce((sum, t) => sum + (Number(t.leads_count) || 0), 0);
+          return (
+            <button
+              onClick={() => setActivePlatformSlug('all')}
+              className={`inline-flex items-center gap-1.5 px-3 py-1.5 text-xs rounded-md transition-all whitespace-nowrap border cursor-pointer ${
+                activePlatformSlug === 'all'
+                  ? 'bg-zinc-900 text-white font-medium border-zinc-900 shadow-2xs'
+                  : 'bg-white text-zinc-700 hover:text-zinc-900 hover:bg-zinc-50 border-zinc-200'
+              }`}
+            >
+              <Sparkles className="w-3.5 h-3.5 text-amber-500" />
+              <span>Semua Saluran</span>
+              <span className={`text-[10px] tabular-nums font-semibold px-1.5 py-0.5 rounded ${
+                activePlatformSlug === 'all' 
+                  ? 'bg-zinc-800 text-emerald-400' 
+                  : 'bg-zinc-100 text-zinc-700 border border-zinc-200'
+              }`}>
+                {totalAllLeads} Leads
+              </span>
+              <span className={`text-[10px] tabular-nums ${
+                activePlatformSlug === 'all' ? 'text-zinc-400' : 'text-zinc-400'
+              }`}>
+                &middot; {allTasks.length} konten
+              </span>
+            </button>
+          );
+        })()}
       </div>
 
       {/* ========================================================================= */}
@@ -681,8 +702,11 @@ function BrandDetailContent() {
             <span className="text-xs font-semibold text-zinc-900">
               Daftar Catatan Tracking
             </span>
-            <span className="text-xs text-zinc-400 tabular-nums">
-              &middot; {filteredTasks.length} entri
+            <span className="text-xs text-zinc-500 tabular-nums">
+              &middot; {filteredTasks.length} konten &middot;{' '}
+              <span className="text-emerald-600 font-semibold">
+                {filteredTasks.reduce((acc, t) => acc + (Number(t.leads_count) || 0), 0)} Total Leads
+              </span>
             </span>
           </div>
 
