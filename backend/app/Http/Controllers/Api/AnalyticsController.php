@@ -191,7 +191,7 @@ class AnalyticsController extends Controller
             ->with(['user:id,name', 'brand:id,name,slug,color', 'platform:id,name,slug,color'])
             ->orderBy('task_date', 'desc')
             ->orderBy('id', 'desc')
-            ->limit(200)
+            ->limit(1000)
             ->get();
 
         // 6. User Monitoring (Aktivitas input task per unit usaha dan per media sosial)
